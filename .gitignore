@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Local dev log (kept on disk, not published)
+session_logs.txt
+
+# Packed extension builds and signing keys — never commit a .pem
+*.crx
+*.pem
+*.zip

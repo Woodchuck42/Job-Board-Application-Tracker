@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Job Application Tracker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      color: #1a1a1a;
+      background: #fff;
+      width: 340px;
+      padding: 16px;
+    }
+
+    h1 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #7C3AED;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #dupe-banner {
+      display: none;
+      background: #FEF3C7;
+      border: 1px solid #F59E0B;
+      border-radius: 4px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: #92400E;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .field {
+      margin-bottom: 9px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 3px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 5px 8px;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #1a1a1a;
+      background: #fafafa;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #7C3AED;
+      background: #fff;
+    }
+
+    textarea { resize: vertical; line-height: 1.4; }
+
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .row2 .field { margin-bottom: 0; }
+
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 8px;
+      background: #7C3AED;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    button:hover:not(:disabled) { background: #5B21B6; }
+    button:disabled { background: #C4B5FD; cursor: not-allowed; }
+
+    #status {
+      margin-top: 10px;
+      font-size: 12px;
+      text-align: center;
+      min-height: 18px;
+    }
+
+    #status.success { color: #057a3a; }
+    #status.error   { color: #c62828; }
+    #status.loading { color: #555; }
+  </style>
+</head>
+<body>
+  <h1>
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="22" height="22" rx="4" fill="#7C3AED"/>
+      <text x="11" y="16" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10" font-weight="700" fill="white" text-anchor="middle">JOB</text>
+    </svg>
+    Job Application Tracker
+  </h1>
+
+  <div id="dupe-banner"></div>
+
+  <div id="form">
+    <div class="row2">
+      <div class="field">
+        <label for="company">Company</label>
+        <input id="company" type="text" placeholder="Acme Corp">
+      </div>
+      <div class="field">
+        <label for="type">Type</label>
+        <select id="type">
+          <option value="IC">IC</option>
+          <option value="Management">Management</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label for="stage">Stage</label>
+        <select id="stage">
+          <option value="Applied">Applied</option>
+          <option value="First Round">First Round</option>
+          <option value="Second Round">Second Round</option>
+          <option value="Project">Project</option>
+          <option value="Final">Final</option>
+          <option value="Disqualified">Disqualified</option>
+          <option value="Decline">Decline</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="date-applied">Date Applied</label>
+        <input id="date-applied" type="date">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="title">Job Title</label>
+      <input id="title" type="text" placeholder="Senior Software Engineer">
+    </div>
+
+    <div class="field">
+      <label for="url">Application URL</label>
+      <input id="url" type="text" placeholder="https://…">
+    </div>
+
+    <div class="field">
+      <label for="about-us">About the Company</label>
+      <textarea id="about-us" rows="3" placeholder="Company description…"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="location">Location / Remote</label>
+      <input id="location" type="text" placeholder="Remote / City, ST">
+    </div>
+
+    <div class="field">
+      <label for="salary">Salary Range</label>
+      <input id="salary" type="text" placeholder="$120K – $160K">
+    </div>
+
+    <div class="field">
+      <label for="benefits">Other Benefits</label>
+      <textarea id="benefits" rows="2" placeholder="401k, equity, health…"></textarea>
+    </div>
+
+    <button id="export-btn">Log Application</button>
+    <div id="status"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
