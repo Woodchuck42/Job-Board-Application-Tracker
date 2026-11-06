@@ -27,7 +27,7 @@ let existingRowNum = null; // null = new entry; number = row to update
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
-  dateInput.value = new Date().toISOString().split('T')[0];
+  dateInput.value = todayIso();
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   urlInput.value = tab.url || '';
@@ -75,7 +75,7 @@ exportBtn.addEventListener('click', async () => {
   const location = locationInput.value.trim();
   const salary   = salaryInput.value.trim();
   const benefits = benefitsInput.value.trim();
-  const dateApplied = formatDate(dateInput.value);
+  const dateApplied = dateInput.value || todayIso();
 
   if (!company) { setStatus('Please enter a company name.', 'error'); return; }
   if (!title)   { setStatus('Please enter a job title.', 'error'); return; }
@@ -175,7 +175,10 @@ function getAuthToken(interactive) {
 // ─── Sheets API ───────────────────────────────────────────────────────────────
 async function findExistingRow(token, url) {
   const range    = encodeURIComponent(`${SHEET_NAME}!A:J`);
-  const endpoint = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}`;
+  // Dates come back as serial numbers so they read correctly in any sheet locale
+  const endpoint =
+    `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}` +
+    `?valueRenderOption=UNFORMATTED_VALUE&dateTimeRenderOption=SERIAL_NUMBER`;
 
   const res = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
   if (!res.ok) return null;
@@ -226,20 +229,20 @@ async function updateRow(token, rowNum, row) {
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-function formatDate(isoDate) {
-  if (!isoDate) {
-    const t = new Date();
-    return `${t.getMonth() + 1}/${t.getDate()}/${t.getFullYear()}`;
-  }
-  const [y, m, d] = isoDate.split('-');
-  return `${parseInt(m)}/${parseInt(d)}/${y}`;
+// Dates are written as YYYY-MM-DD, which Sheets parses the same way in every locale
+function todayIso() {
+  const t = new Date();
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
 }
 
-// MM/DD/YYYY → YYYY-MM-DD for the date input
-function isoFromSheet(mmddyyyy) {
-  const [m, d, y] = mmddyyyy.split('/');
-  if (!y) return new Date().toISOString().split('T')[0];
-  return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+// Sheets date value → YYYY-MM-DD for the date input.
+// Real dates arrive as serial numbers (days since 1899-12-30); text dates are passed through if already ISO.
+function isoFromSheet(value) {
+  if (typeof value === 'number') {
+    return new Date(Date.UTC(1899, 11, 30) + Math.floor(value) * 86400000).toISOString().split('T')[0];
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  return todayIso();
 }
 
 function setStatus(msg, type) {

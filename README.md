@@ -27,7 +27,7 @@ You need your own Google Sheet and your own Google Cloud OAuth client. Nothing i
    | F | Location/Remote | Location or remote status |
    | G | Salary | Salary range |
    | H | Benefits | Other benefits |
-   | I | Date Applied | Date in M/D/YYYY format |
+   | I | Date Applied | Date, written as YYYY-MM-DD |
    | J | Stage | One of the Stage values below |
    | K | Notes | Not filled in; for your own notes |
 
